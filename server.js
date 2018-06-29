@@ -1,105 +1,36 @@
-// server.js
-// where your node app starts
-// init project
+require('dotenv').config();
+
 const express = require('express');
-const bodyParser = require('body-parser');
+const exphbs  = require('express-handlebars');
 const fileUpload = require('express-fileupload');
+
+const sqlite = require('./services/sqlite');
+
 const app = express();
-const createWTClient = require('@wetransfer/js-sdk');
-var crypto = require('crypto');
-
+app.use(express.json());
 app.use(fileUpload());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-// http://expressjs.com/en/starter/static-files.html
+app.use(require('./routes'));
+
+// Server static assets directly from public folder
 app.use(express.static('public'));
-app.use(express.static('/tmp'));
 
-// init sqlite db
-var fs = require('fs');
-var dbFile = './.data/sqlite.db';
-var exists = fs.existsSync(dbFile);
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(dbFile);
+// Register handlebars  as template engine
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
-// if ./.data/sqlite.db does not exist, create it, otherwise print records to console
-db.serialize(function(){
-  if (!exists) {
-    db.run('CREATE TABLE if not exists transfers (link_hash TEXT, transfer_link TEXT, transfer_lat TEXT, transfer_long TEXT)');
-    console.log('New table transfers created!!!');    
-  }
-  else {
-    console.log('Database "transfers" ready to go!');
-    db.each('SELECT * FROM transfers', function(err, row) {
-      if ( row ) {
-        console.log('record:', row);
-      }
+sqlite.init('./.data/sqlite.db')
+  .then(() => {
+    // Register all the routes
+
+    app.get('/', (request, response) => {
+      response.render('home');
     });
-  }
-});
 
-// http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (request, response) {
-  response.sendFile(__dirname + '/views/index.html');
-});
-
-app.get('/show/:link_hash', (req, res) => {
-  db.each('SELECT * FROM transfers WHERE link_hash = ?', req.params.link_hash, function(err,row){
-    console.log(row);
-    res.sendFile(__dirname + '/views/show.html', {transfer: row})
-  })
-});
-
-
-app.post("/create", async (request, response) => {
-  const file = request.files.file;
-  try {
-    const apiClient = await createWTClient(process.env.WT_API_SDK_KEY);
-    var lat = request.body["latitude"]
-    var long = request.body["longitude"]
-
-    const transfer = await apiClient.transfer.create({
-      name: "I was living at...",
-      description: lat + ' x ' + long
+    const listener = app.listen(process.env.PORT, () => {
+      const port = listener.address().port;
+      console.log(`Your app is listening at http://localhost:${port}/`);
     });
-    const transferItems = await apiClient.transfer.addItems(transfer.id, [{
-      content_identifier: 'file',
-      local_identifier: file.name.substr(0,30),
-      filename: file.name,
-      filesize: file.data.length
-    }]);
-    await apiClient.transfer.uploadFile(transferItems[0], file.data);
-    var stmt = db.prepare("INSERT INTO transfers VALUES (?, ?, ?, ?)");
-      var link = transfer.shortened_url
-      var link_hash = crypto.createHash('md5').update(link).digest("hex");
-      var lat = request.body["latitude"]
-      var long = request.body["longitude"]
-    stmt.run(link_hash, link, lat, long);
-    stmt.finalize();
-    response.sendFile(__dirname + '/views/index.html');
-  } catch (error) {
-    console.log(error);
-  }
-})
+  });
 
-
-
-// listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
-});
-
-
-// we've started you off with Express, 
-// but feel free to use whatever libs or frameworks you'd like through `package.json`.
-var sassMiddleware = require("node-sass-middleware");
-
-app.use(sassMiddleware({
-  src: __dirname + '/public',
-  dest: '/tmp',
-  //debug: true,
-  //outputStyle: 'compressed',
-}));
-
-// http://expressjs.com/en/starter/static-files.html
 
