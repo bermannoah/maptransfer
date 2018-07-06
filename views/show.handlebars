@@ -1,9 +1,11 @@
 <main>
-  <aside>
-    <section class="transfers">
-      <h3>Location:</h3>
-      <a href="#" class="button">Download Transfer</a>
-    </section>
-  </aside>
   <div id="mapid"></div>
 </main>
+<script>
+  var transfer = {
+    link_hash: '{{transfer.link_hash}}',
+    lat: {{transfer.lat}},
+    long: {{transfer.long}},
+    radius: {{transfer.radius}}
+  };
+</script>

@@ -1,5 +1,5 @@
 (function() {
-  const mymap = L.map('mapid').setView([52.3754419819, 4.930586814], 13);
+  const mymap = window.mymap = L.map('mapid').setView([52.3754419819, 4.930586814], 13);
   const marker = L.marker();
   const circle = new L.circle();
 
@@ -36,6 +36,10 @@
   const range = document.getElementById('range-input');
   const output = document.getElementById('range-output');
 
+  if (!output || !range) {
+    return;
+  }
+
   output.innerHTML = formatter(radius);
   range.addEventListener('input', (event) => {
     const step = event.target.value - 1;
@@ -59,25 +63,3 @@
       .addTo(mymap);
   });
 })();
-
-
-
-
-
-
-
-
-// let selectedLocation = null;
-
-// input.oninput = function() {
-//   radius = values[this.value - 1];
-//   output.innerHTML = formatter(values[this.value - 1]);
-//   if(circle){
-//     circle.setRadius(radius);
-//   }
-// };
-
-// input.oninput();
-
-
-

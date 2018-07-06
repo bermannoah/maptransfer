@@ -1,12 +1,7 @@
 const router = require('express').Router();
 
 const { createTransfer } = require('../services/wetransfer');
-const { getTransfers, insertTransfer } = require('../services/sqlite');
-
-router.get('/', async (request, response, next) => {
-  console.log('Transfers: ', await getTransfers())
-  response.json(await getTransfers());
-});
+const { insertTransfer, getTransfer } = require('../services/sqlite');
 
 router.post('/create', async (request, response, next) => {
   const file = request.files.file;
@@ -21,7 +16,7 @@ router.post('/create', async (request, response, next) => {
       [file]
     );
 
-    insertTransfer({
+    const linkHash = insertTransfer({
       shortened_url: transfer,
       latitude,
       longitude,
@@ -29,12 +24,18 @@ router.post('/create', async (request, response, next) => {
     });
 
     response.json({
-      transfer
+      linkHash
     });
   } catch (error) {
     console.log(error);
     next(error);
   }
+});
+
+router.get('/:hash', async (request, response) => {
+  const transfer = await getTransfer(request.params.hash);
+
+  response.render('show', { transfer });
 });
 
 module.exports = router;
