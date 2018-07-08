@@ -83,11 +83,16 @@ hr {
   margin-bottom: 10px;
 }
 
-#mapid {
+.home #mapid {
   width: 100vw;
   height: 100vh;
-  background: #efefef;
-  z-index: 10;
+  position: relative;
+  z-index: 50;
+}
+
+.show #mapid {
+  height: calc(100vh - 114px);
+  width: inherit;
 }
 
 .button {
@@ -106,3 +111,52 @@ hr {
   text-decoration: none;
   text-align: center;
 }
+
+#meta {
+  display: flex;
+  justify-content: space-between;
+}
+
+#meta .info {
+  display: flex;
+}
+
+#meta .col {
+  padding: 30px;
+  min-width: 280px;
+}
+
+#meta #message {
+  background: #efefef;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  padding: 30px;
+  width: 400px;
+}
+
+#meta .button {
+  display: block;
+  padding: 15px 30px;
+  background: #111;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+#meta h2 {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#meta p {
+  font-size: 24px;
+  line-height: 32px;
+  margin: 0;
+}
+

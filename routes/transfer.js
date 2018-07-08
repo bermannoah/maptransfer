@@ -23,9 +23,7 @@ router.post('/create', async (request, response, next) => {
       radius
     });
 
-    response.json({
-      linkHash
-    });
+    response.render('show/' + linkHash);
   } catch (error) {
     console.log(error);
     next(error);
@@ -34,7 +32,6 @@ router.post('/create', async (request, response, next) => {
 
 router.get('/:hash', async (request, response) => {
   const transfer = await getTransfer(request.params.hash);
-
   response.render('show', { transfer });
 });
 

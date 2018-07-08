@@ -1,8 +1,31 @@
-<main>
+<main class="show">
   <div id="mapid"></div>
+
+  <div id="meta">
+    <div class="info">
+      <div class="col" id="target">
+        <h2>Target</h2>
+        <p></p>
+      </div>
+      <div class="col" id="location">
+        <h2>Your Location</h2>
+        <p>Loading..</p>
+      </div>
+      <div class="col" id="distance">
+        <h2>Distance</h2>
+        <p>Loading..</p>
+      </div>
+    </div>
+    <div id="message">
+      <p>Loading..</p>
+
+    </div>
+  </div>
 </main>
+
 <script>
   var transfer = {
+    link: '{{transfer.link}}',
     link_hash: '{{transfer.link_hash}}',
     lat: {{transfer.lat}},
     long: {{transfer.long}},
