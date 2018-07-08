@@ -14,17 +14,6 @@
     accessToken: 'pk.eyJ1IjoidGhvbWFzb2ZmaW5nYSIsImEiOiJjamc3cTlyczgwdWs0MndrbDhmeWdrd3RkIn0.44lDtgLNa9soBfbU67ASpQ'
   }).addTo(mymap);
 
-  // Add some map controls
-  mymap.addControl(
-    L.control.locate({
-      locateOptions: {
-        maxZoom: 14,
-        drawCircle: false
-      }
-    })
-  );
-  L.Control.geocoder().addTo(mymap);
-
   // Our list of range selectable values
   let radius = 500; // sets default radius
   const availableRadius = [50, 100, 500, 1000, 5000, 20000, 50000, 100000, 250000, 500000];
