@@ -16,19 +16,22 @@
   const radiusInput = document.getElementById('radius');
   const latitudeInput = document.getElementById('latitude');
   const longitudeInput = document.getElementById('longitude');
-  const fileInput = document.getElementById('files');
   const rangeContainer = document.querySelector('.range');
-  const range = document.getElementById('range-input');
+  const rangeInput = document.getElementById('range-input');
+  const filesContainer = document.querySelector('.files');
+  const filesInput = document.getElementById('files');
+  const locationContainer = document.querySelector('.location');
+  const locationOutput = document.getElementById('location-output');
 
-  if (!range) {
+  if (!rangeInput) {
     return;
   }
 
-  fileInput.addEventListener('input', (event) => {
-    document.querySelector('.files').classList.add('done');
+  filesInput.addEventListener('input', (event) => {
+    filesContainer.classList.add('done');
   });
 
-  range.addEventListener('input', (event) => {
+  rangeInput.addEventListener('input', (event) => {
     const step = event.target.value - 1;
     radius = availableRadius[step];
     circle.setRadius(radius);
@@ -40,8 +43,8 @@
     longitudeInput.value = event.latlng.lng;
     radiusInput.value = radius;
 
-    document.querySelector('.location').classList.add('done');
-    document.getElementById('location-output').innerHTML = `${event.latlng.lat}, ${event.latlng.lng}`;
+    locationContainer.classList.add('done');
+    locationOutput.innerHTML = `${event.latlng.lat}, ${event.latlng.lng}`;
 
     circle
       .setLatLng(event.latlng)
