@@ -1,9 +1,30 @@
-<main>
-  <aside>
-    <section class="transfers">
-      <h3>Location:</h3>
-      <a href="#" class="button">Download Transfer</a>
-    </section>
-  </aside>
-  <div id="mapid"></div>
+<main class="show wrapper">
+  <div id="map"></div>
+  <div id="transfer-info" class="bar">
+    <div id="target">
+      <h2>Target</h2>
+      <p></p>
+    </div>
+    <div id="location">
+      <h2>Your Location</h2>
+      <p>Loading..</p>
+    </div>
+    <div id="distance">
+      <h2>Distance</h2>
+      <p>Loading..</p>
+    </div>
+    <div id="message">
+      <p>Loading..</p>
+    </div>
+  </div>
 </main>
+
+<script>
+  var transfer = {
+    link: '{{transfer.link}}',
+    link_hash: '{{transfer.link_hash}}',
+    lat: {{transfer.lat}},
+    long: {{transfer.long}},
+    radius: {{transfer.radius}}
+  };
+</script>

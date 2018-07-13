@@ -5,8 +5,9 @@ const sqlite3 = require('sqlite3').verbose();
 const query = {
   CREATE_TABLE: `CREATE TABLE
     if not exists transfers
-    (link_hash TEXT, transfer_link TEXT, transfer_lat TEXT, transfer_long TEXT, transfer_radius TEXT)`,
+    (link_hash TEXT, link TEXT, lat TEXT, long TEXT, radius TEXT)`,
   SELECT_ALL_TRANSFERS: 'SELECT * FROM transfers',
+  SELECT_BY_LINK_HASH: 'SELECT * FROM transfers WHERE link_hash = ?',
   INSERT_TRANSFER: 'INSERT INTO transfers VALUES (?, ?, ?, ?, ?)'
 };
 
@@ -52,28 +53,30 @@ async function init(filePath) {
 }
 
 function insertTransfer(transfer) {
-  const stmt = db.prepare('INSERT INTO transfers VALUES (?, ?, ?, ?, ?)');
+  const stmt = db.prepare(query.INSERT_TRANSFER);
   const link = transfer.shortened_url;
-  const link_hash = crypto.createHash('md5').update(link).digest('hex');
-  stmt.run(link_hash, link, transfer.latitude, transfer.longitude, transfer.radius);
+  const linkHash = crypto.createHash('md5').update(link).digest('hex');
+  stmt.run(linkHash, link, transfer.latitude, transfer.longitude, transfer.radius);
   stmt.finalize();
+
+  return linkHash;
 }
 
-function getTransfers() {
+function getTransfer(link_hash) {
   return new Promise(async (resolve, reject) => {
-    db.all(query.SELECT_ALL_TRANSFERS, (err, rows) => {
-      if (err) {
-        reject(err);
+    console.log(link_hash);
+    db.get(query.SELECT_BY_LINK_HASH, link_hash, (error, row) => {
+      if (error) {
+        reject(error);
       }
 
-      resolve(rows);
+      resolve(row);
     });
-
   });
 }
 
 module.exports = {
   init,
   insertTransfer,
-  getTransfers
+  getTransfer
 };

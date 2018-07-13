@@ -1,18 +1,9 @@
-(function(){
-  const transfers = [];
+(function() {
+  const transfersForm = document.getElementById('transfer-create');
 
-  const transfersList = document.getElementById('transfers');
-  const transfersForm = document.getElementById('create-transfer');
-
-  function appendNewTransfer(transfer) {
-    const newListItem = document.createElement('li');
-    newListItem.innerHTML = transfer;
-    transfersList.appendChild(newListItem);
+  if (!transfersForm) {
+    return;
   }
-
-  fetch('/transfers')
-    .then((response) => response.json())
-    .then((transfers) => transfers.forEach(appendNewTransfer));
 
   transfersForm.addEventListener('submit', (event) => {
     // stop our form submission from refreshing the page
@@ -24,14 +15,12 @@
     data.append('latitude', event.target.elements.latitude.value);
     data.append('longitude', event.target.elements.longitude.value);
 
-    console.log(data);
-
     fetch('/transfers/create', {
       method: 'POST',
       body: data
     })
       .then((response) => response.json())
-      .then((success) => console.log(success))
+      .then((success) => window.location.assign(`/transfers/${success.linkHash}`))
       .catch((error) => console.log(error));
   });
-})()
+})();
