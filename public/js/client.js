@@ -1,5 +1,5 @@
-(function(){
-  const transfersForm = document.getElementById('create-transfer');
+(function() {
+  const transfersForm = document.getElementById('transfer-create');
 
   if (!transfersForm) {
     return;
@@ -20,7 +20,7 @@
       body: data
     })
       .then((response) => response.json())
-      .then((success) => console.log(success))
+      .then((success) => window.location.assign(`/transfers/${success.linkHash}`))
       .catch((error) => console.log(error));
   });
-})()
+})();

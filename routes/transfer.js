@@ -23,7 +23,9 @@ router.post('/create', async (request, response, next) => {
       radius
     });
 
-    response.render('show/' + linkHash);
+    response.json({
+      linkHash
+    });
   } catch (error) {
     console.log(error);
     next(error);

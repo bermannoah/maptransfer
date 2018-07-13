@@ -1,21 +1,23 @@
-<main class="home">
-  <aside>
-    <form action="/create" method="POST" enctype="multipart/form-data" id="create-transfer">
-      <h3>Select the files you want to send</h3>
-      <input type="file" id="files" name="file">
-      <hr>
-      <div class="range">
-        <h3>Click on the map</h3>
-        <p>and tweak the size of the area your download will be available.</p>
-        <input type="range" id="range-input" class="input" min="1" max="10" steps="10" value="3">
-        <p class="output">Download range: <span id="range-output"></span></p>
-      </div>
-      <hr>
+<main class="home wrapper">
+  <div id="map"></div>
+  <form action="/create" method="POST" enctype="multipart/form-data" id="transfer-create" class="bar">
+    <div class="location">
+      <h2>Pick a location</h2>
+      <span id="location-output">Click on the map</span>
+    </div>
+    <div class="range disabled">
+      <h2>Select range</h2>
+      <input type="range" id="range-input" class="input" min="1" max="13" steps="13" value="4" required>
+    </div>
+    <div class="files">
+      <h2>Pick your files</h2>
+      <input type="file" id="files" name="file" required>
+    </div>
+    <span class="submit">
       <input type="hidden" id="latitude" name="latitude">
       <input type="hidden" id="longitude" name="longitude">
       <input type="hidden" id="radius" name="radius">
       <input type="submit" value="Start upload">
-    </form>
-  </aside>
-  <div id="mapid"></div>
+    </span>
+  </form>
 </main>
