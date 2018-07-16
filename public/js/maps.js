@@ -22,13 +22,26 @@
   const filesInput = document.getElementById('files');
   const locationContainer = document.querySelector('.location');
   const locationOutput = document.getElementById('location-output');
+  const formSubmit = document.getElementById('submit');
 
   if (!rangeInput) {
     return;
   }
 
+  let fileCheck = false;
+  let locationCheck = false;
+  let rangeCheck = false;
+
+  function formCheck() {
+    if (fileCheck && locationCheck && rangeCheck) {
+      formSubmit.disabled = false;
+    }
+  }
+
   filesInput.addEventListener('input', (event) => {
     filesContainer.classList.add('done');
+    fileCheck = true;
+    formCheck();
   });
 
   rangeInput.addEventListener('input', (event) => {
@@ -36,6 +49,8 @@
     radius = availableRadius[step];
     circle.setRadius(radius);
     rangeContainer.classList.add('done');
+    rangeCheck = true;
+    formCheck();
   });
 
   mymap.addEventListener('click', function(event) {
@@ -44,6 +59,8 @@
     radiusInput.value = radius;
 
     locationContainer.classList.add('done');
+    locationCheck = true;
+    formCheck();
     locationOutput.innerHTML = `${event.latlng.lat}, ${event.latlng.lng}`;
 
     circle
