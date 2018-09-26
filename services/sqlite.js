@@ -54,7 +54,7 @@ async function init(filePath) {
 
 function insertTransfer(transfer) {
   const stmt = db.prepare(query.INSERT_TRANSFER);
-  const link = transfer.shortened_url;
+  const link = transfer.url;
   const linkHash = crypto.createHash('md5').update(link).digest('hex');
   stmt.run(linkHash, link, transfer.latitude, transfer.longitude, transfer.radius);
   stmt.finalize();
