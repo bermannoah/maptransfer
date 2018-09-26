@@ -1,35 +1,56 @@
 const router = require('express').Router();
 
-const { createTransfer } = require('../services/wetransfer');
+const { createTransfer, getUploadUrl, completeFileUpload, finalizeTransfer } = require('../services/wetransfer');
 const { insertTransfer, getTransfer } = require('../services/sqlite');
 
 router.post('/create', async (request, response, next) => {
-  const file = request.files.file;
+  const files = request.body.files;
   const latitude = request.body.latitude;
   const longitude = request.body.longitude;
-  const radius = request.body.radius;
 
   try {
     const transfer = await createTransfer(
-      'I was living at...',
-      `${latitude} x ${longitude}`,
-      [file]
+      `I was living at... ${latitude} x ${longitude}`,
+      files
     );
 
-    const linkHash = insertTransfer({
-      shortened_url: transfer,
-      latitude,
-      longitude,
-      radius
-    });
-
-    response.json({
-      linkHash
-    });
+    response.json(transfer);
   } catch (error) {
     console.log(error);
     next(error);
   }
+});
+
+router.get('/:transferId/files/:fileId/upload-url/:partNumber', async (request, response) => {
+  response.json(await getUploadUrl(
+    request.params.transferId,
+    request.params.fileId,
+    request.params.partNumber
+  ));
+});
+
+router.post('/upload-complete', async (request, response) => {
+  response.json(await completeFileUpload(
+    request.body.transfer,
+    request.body.file
+  ));
+});
+
+router.put('/:transferId/finalize', async (request, response) => {
+  const transfer = await finalizeTransfer(
+    request.params.transferId
+  );
+
+  const linkHash = insertTransfer({
+    url: transfer.url,
+    latitude: request.body.latitude,
+    longitude: request.body.longitude,
+    radius: request.body.radius
+  });
+
+  response.json({
+    linkHash
+  });
 });
 
 router.get('/:hash', async (request, response) => {
